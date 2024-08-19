@@ -108,6 +108,7 @@ function drawDetections(detections) {
   drawExpressions(detections, 20, 250, 14);
 }
 
+//test
 function drawBoundingBoxes(detections) {
   detections.forEach((detection) => {
     const { _x, _y, _width, _height } = detection.alignedRect._box;
