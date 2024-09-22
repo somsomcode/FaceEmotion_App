@@ -1,74 +1,67 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>감정 분석 결과</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>최종 감정 분석 결과</title>
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        padding: 20px;
-      }
-      #start-button {
-        margin-top: 20px;
-        padding: 10px 20px;
-        font-size: 16px;
-        background-color: black;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-      #start-button:hover {
-        background-color: gray;
-      }
-
-      /* expression 요소의 글씨 크기 조정 */
-      #expression {
-        font-size: 24px; /* 글씨 크기 설정 (24px는 예시로, 필요에 따라 조절) */
-        font-weight: bold; /* 글씨를 굵게 */
-      }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        #result {
+            font-size: 1.5rem;
+            margin-top: 20px;
+        }
+        #backButton {
+            margin-top: 30px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: black;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #backButton:hover {
+            background-color: gray;
+        }
     </style>
-  </head>
-  <body>
-    <h1>감정 분석 결과</h1>
+</head>
+<body>
 
-    <!-- 설명 문장 추가 -->
-    <button id="start-button">처음 화면으로</button>
+    <h1>최종 감정 분석 결과</h1>
 
-    <p id="expression"></p>
-    <p>
-      이 페이지에서는 얼굴 인식 기술을 사용하여 당신의 감정을 분석한 결과를
-      보여줍니다.<br />
-      아래의 결과는 N초 동안 당신의 표정에서 분석된 감정의 가장 높은 값을
-      기준으로 합니다.<br />
-      당신을 위한 Light 테라피가 준비되어 있습니다.<br />
-      편안하게 작품을 감상하세요.
-    </p>
+    <!-- 최종 감정과 퍼센트를 표시할 부분 -->
+    <div id="result">
+        <p><strong>최종 감정:</strong> <span id="finalEmotion"></span></p>
+        <p><strong>가중 평균 점수:</strong> <span id="weightedAverageScore"></span></p>
+    </div>
+
+    <!-- 처음으로 버튼 추가 -->
+    <button id="backButton">처음으로</button>
 
     <script>
-      // 로컬 스토리지에서 값 읽어오기
-      const highestAverageExpression = JSON.parse(
-        localStorage.getItem("highestAverageExpression")
-      );
+        window.onload = function () {
+            // 1. 로컬 스토리지에서 데이터를 가져옴
+            const finalResult = JSON.parse(localStorage.getItem('finalEmotionResult'));
+            console.log(finalResult);
 
-      // 결과 표시
-      const expressionElement = document.getElementById("expression");
-      if (highestAverageExpression) {
-        expressionElement.textContent = `당신의 표정에서 가장 높게 분석되는 감정은 : ${
-          highestAverageExpression.name
-        } (${(highestAverageExpression.value * 100).toFixed(2)}%) 입니다.`;
-      } else {
-        expressionElement.textContent = "감정 분석 결과를 불러올 수 없습니다.";
-      }
+            // 2. 데이터가 존재할 경우 HTML에 나타내기
+            if (finalResult) {
+                document.getElementById('finalEmotion').innerText = finalResult.emotion;
+                document.getElementById('weightedAverageScore').innerText = finalResult.weightedAverageScore + '%';
+            } else {
+                document.getElementById('result').innerText = '결과를 찾을 수 없습니다.';
+            }
+        };
 
-      // 버튼 클릭 시 start.html로 이동
-      document
-        .getElementById("start-button")
-        .addEventListener("click", function () {
-          window.location.href = "start.html";
+        // 처음으로 버튼 클릭 시 start.html로 이동
+        document.getElementById('backButton').addEventListener('click', function() {
+            window.location.href = 'start.html';
         });
     </script>
-  </body>
+
+</body>
 </html>

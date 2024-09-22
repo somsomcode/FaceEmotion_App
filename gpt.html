@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>발화 감정 분석</title>
+</head>
+<body>
+    <h1>오늘 하루 어땠어?</h1>
+    <button id="startButton">감정 분석 시작</button>
+
+    <!-- 음성 인식된 텍스트 및 분석 결과 -->
+    <p><strong>음성 인식된 텍스트:</strong> <span id="recognizedText"></span></p>
+    <p><strong>발화 분석 결과:</strong> <span id="gptResponse"></span></p>
+    <p><strong>남은 시간:</strong> <span id="timer">15</span>초</p> <!-- 타이머 추가 -->
+
+    <div>
+        <textarea id="userInput" placeholder="Enter text here"></textarea>
+        <button id="sendTextButton">Send Text</button>
+    </div>
+
+    <!-- 결과 확인 버튼 추가 -->
+    <div>
+        <button id="resultButton">결과 확인</button>
+    </div>
+
+    <script src="gpt.js"></script>
+    <script>
+        // 결과 확인 버튼 클릭 시 result.js 실행
+        document.getElementById('resultButton').addEventListener('click', function() {
+            // result.js 파일을 동적으로 로드
+            const script = document.createElement('script');
+            script.src = 'result.js'; // result.js 파일 경로
+            document.body.appendChild(script);
+            window.location.href = "load.html";
+        });
+    </script>
+</body>
+</html>

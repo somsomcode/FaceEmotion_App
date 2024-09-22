@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>표정 감정 분석</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/addons/p5.sound.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ml5js/Intro-ML-Arts-IMA@ml5-build-10-7-19/ml5_build/ml5.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <style>
+    body {
+      background-color: white;
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    /* 제목을 상단 중앙에 배치 */
+    #title {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* 비디오와 텍스트를 가로로 정렬 */
+    #container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 40px; /* 비디오와 텍스트 간의 간격 */
+    }
+
+    /* 카메라와 버튼을 세로로 정렬 */
+    #videoContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 640px; /* 카메라 영역 고정 */
+    }
+
+    /* 버튼을 가로로 나란히 배치 */
+    #buttonContainer {
+      display: flex;
+      justify-content: center;
+      gap: 10px; /* 버튼 간의 간격 */
+      margin-top: 10px;
+    }
+
+    /* 카메라 스타일 */
+    #videoInput {
+      width: 100%;
+      height: auto;
+      border: 3px solid #fff;
+      border-radius: 10px;
+    }
+
+   /* 텍스트 섹션 */
+    #textContainer {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 100px; /* 텍스트 영역 고정 */
+      text-align: left;
+      font-size: 12px; /* 폰트 크기 */
+      color: #333; /* 텍스트 색상 */
+    }
+
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  </style>
+  <body>
+    <!-- 제목을 상단 중앙에 배치 -->
+    <div id="title">
+      <h1>오늘 하루 어땠어?</h1>
+    </div>
+
+    <!-- 비디오와 텍스트를 가로로 정렬 -->
+    <div id="container">
+      <!-- 카메라 및 버튼 섹션 -->
+      <div id="videoContainer">
+        <video id="videoInput" width="640" height="480" autoplay muted></video>
+
+        <!-- 버튼을 가로로 나란히 배치 -->
+        <div id="buttonContainer">
+          <button id="startButton">감정 분석 시작</button>
+          <button id="stopButton" disabled>분석 중지</button>
+        </div>
+      </div>
+
+      <!-- 텍스트 섹션 (카메라 오른쪽에 배치) -->
+      <div id="textContainer">
+        <p><strong>표정 감지:</strong> <span id="expressionResult"></span></p>
+        <p style="font-size: 24px;"><strong>남은 시간:</strong> <span id="timer"></span></p>
+      </div>
+    </div>
+
+    <script src="face.js"></script>
+  </body>
+</html>
