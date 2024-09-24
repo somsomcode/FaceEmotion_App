@@ -8,6 +8,7 @@
       /* 배경 영상과 전체 레이아웃 설정 */
       body,
       html {
+        font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
         height: 100%;
@@ -46,18 +47,20 @@
       }
 
       button {
-        padding: 15px 30px;
-        font-size: 1.5em;
-        background-color: rgba(255, 255, 255, 0.7);
+        color: white; /* 폰트 색상을 흰색으로 변경 */
+        padding: 20px 40px;
+        font-size: 2em;
+        background: linear-gradient(to bottom, #1f0d68, #461cbb); /* 그라데이션 적용 */
         border: none;
-        border-radius: 5px;
+        border-radius: 15px;
         cursor: pointer;
         transition: background-color 0.3s ease;
-      }
+    }
+    
 
-      button:hover {
-        background-color: rgba(255, 255, 255, 1);
-      }
+    button:hover {
+      background: linear-gradient(to right, rgb(203, 190, 255), rgb(150, 136, 255)); /* 호버 시 그라데이션 */
+  }
     </style>
   </head>
   <body>
@@ -66,7 +69,7 @@
     </video>
 
     <div class="button-container">
-      <button onclick="location.href='cam.html'">감정 분석</button>
+      <button onclick="location.href='face.html'">감정 분석</button>
       <button onclick="location.href='intro.html'">작품 설명</button>
     </div>
   </body>
