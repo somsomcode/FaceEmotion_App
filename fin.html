@@ -103,7 +103,9 @@
         };
 
         function sendFinalEmotionToServer(finalEmotionNum) {
-            fetch('http://localhost:3000/gpt', {
+            //http://34.47.112.24:3000
+            //http://localhost:3000
+            fetch('http://34.47.112.24:3000/gpt', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -137,7 +139,7 @@
       });
 
         document.getElementById('backButton').addEventListener('click', function() {
-            window.location.href = 'start.html';
+            window.location.href = 'index.html';
         });
     </script>
 

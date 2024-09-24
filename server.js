@@ -137,5 +137,5 @@ wss.on("connection", (ws) => {
 
 // 서버 실행
 server.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server is run`);
 });
