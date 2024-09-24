@@ -35,8 +35,7 @@ startButton.addEventListener('click', () => {
         recognition.stop(); // 15초 후 음성 인식 중지
         startButton.disabled = false; // 버튼 다시 활성화
         clearInterval(countdown); // 타이머 종료
-        timerElement.innerText = 15; // 타이머 초기화
-
+        
         // 수집된 텍스트를 한 번에 GPT로 전송
         sendTextToGPT(finalTranscript);
     }, 15000); // 15초

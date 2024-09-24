@@ -128,56 +128,60 @@ function detectFaces() {
 
 // 종합 감정 분석 함수
 async function analyzeFinalEmotion() {
-    // n초 동안 감지된 표정 중에서 가장 높은 값 찾기
-    const averagedExpressions = {
-        neutral: 0,
-        happy: 0,
-        angry: 0,
-        sad: 0,
-        disgusted: 0,
-        surprised: 0,
-        fearful: 0,
-    };
+  const averagedExpressions = {
+      neutral: 0,
+      happy: 0,
+      angry: 0,
+      sad: 0,
+      disgusted: 0,
+      surprised: 0,
+      fearful: 0,
+  };
 
-    expressionDataArray.forEach((expressions) => {
-        averagedExpressions.neutral += expressions.neutral;
-        averagedExpressions.happy += expressions.happy;
-        averagedExpressions.angry += expressions.angry;
-        averagedExpressions.sad += expressions.sad;
-        averagedExpressions.disgusted += expressions.disgusted;
-        averagedExpressions.surprised += expressions.surprised;
-        averagedExpressions.fearful += expressions.fearful;
-    });
+  expressionDataArray.forEach((expressions) => {
+      averagedExpressions.neutral += expressions.neutral;
+      averagedExpressions.happy += expressions.happy;
+      averagedExpressions.angry += expressions.angry;
+      averagedExpressions.sad += expressions.sad;
+      averagedExpressions.disgusted += expressions.disgusted;
+      averagedExpressions.surprised += expressions.surprised;
+      averagedExpressions.fearful += expressions.fearful;
+  });
 
-    // 평균 계산
-    const totalFrames = expressionDataArray.length;
-    for (let key in averagedExpressions) {
-        averagedExpressions[key] = (averagedExpressions[key] / totalFrames) * 100;
-    }
+  const totalFrames = expressionDataArray.length;
+  for (let key in averagedExpressions) {
+      averagedExpressions[key] = (averagedExpressions[key] / totalFrames) * 100;
+  }
 
-    // 가장 높은 값을 가진 표정 찾기
-    const finalExpression = Object.keys(averagedExpressions).reduce((a, b) =>
-        averagedExpressions[a] > averagedExpressions[b] ? a : b
-    );
+  const finalExpression = Object.keys(averagedExpressions).reduce((a, b) =>
+      averagedExpressions[a] > averagedExpressions[b] ? a : b
+  );
 
-    // 표정을 숫자로 매핑
-    const expressionMapping = {
-        neutral: 0,
-        angry: 1,
-        disgusted: 1,
-        fearful: 2,
-        happy: 3,
-        sad: 4,
-        surprised: 5
-    };
+  const expressionMapping = {
+      neutral: 0,
+      angry: 1,
+      disgusted: 1,
+      fearful: 2,
+      happy: 3,
+      sad: 4,
+      surprised: 5
+  };
 
-    const mappedExpression = expressionMapping[finalExpression]; // 매핑된 숫자 값
+  const mappedExpression = expressionMapping[finalExpression]; // 매핑된 숫자 값
 
-    // 로컬 스토리지에 최종 표정 결과 저장
-    const faceData = {
-        face_emotion: mappedExpression, // 숫자로 변환된 표정 결과
-        face_score: averagedExpressions[finalExpression].toFixed(2) // 퍼센트 값
-    };
+  // 로컬 스토리지에 최종 표정 결과 저장
+  const faceData = {
+      face_emotion: mappedExpression, // 숫자로 변환된 표정 결과
+      face_score: averagedExpressions[finalExpression].toFixed(2) // 퍼센트 값
+  };
 
-    localStorage.setItem('faceData', JSON.stringify(faceData)); // 로컬 스토리지에 저장
+  localStorage.setItem('faceData', JSON.stringify(faceData)); // 로컬 스토리지에 저장
+
+  // 결과가 0일 경우 안내
+  if (mappedExpression === 0) {
+      alert("인식된 표정이 없습니다. 다시 시작해 주세요.");
+        location.reload(); // 페이지 새로 고침
+  }
+
 }
+
