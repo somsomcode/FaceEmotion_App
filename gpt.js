@@ -28,17 +28,12 @@ startButton.addEventListener('click', () => {
 
         if (timeLeft <= 0) {
             clearInterval(countdown); // 타이머 종료
+            recognition.stop(); // 타이머가 끝나면 음성 인식 중지
+            startButton.disabled = false; // 버튼 다시 활성화
+            timerElement.innerText = ""; // 타이머 텍스트 비우기
+            sendTextToGPT(finalTranscript); // 수집된 텍스트를 GPT로 전송
         }
     }, 1000);
-
-    setTimeout(() => {
-        recognition.stop(); // 15초 후 음성 인식 중지
-        startButton.disabled = false; // 버튼 다시 활성화
-        clearInterval(countdown); // 타이머 종료
-        
-        // 수집된 텍스트를 한 번에 GPT로 전송
-        sendTextToGPT(finalTranscript);
-    }, 15000); // 15초
 });
 
 // 음성 인식 결과를 처리하는 함수
@@ -48,28 +43,38 @@ recognition.onresult = (event) => {
     recognizedTextElement.innerText = finalTranscript; // 실시간으로 업데이트
 };
 
-// // 사용자 텍스트 입력 후 전송 버튼 클릭 이벤트
-// sendTextButton.addEventListener('click', () => {
-//     const userInputText = userInput.value.trim(); // 사용자 입력 텍스트 가져오기
-//     if (userInputText) {
-//         sendTextToGPT(userInputText); // 사용자가 입력한 텍스트를 GPT에 전송
-//     }
-// });
+// GPT API에 요청을 보내는 함수
+async function fetchGPTResponse(text) {
+    const urls = [
+        `https://34.47.112.24:3000/gpt`,
+        `http://34.47.112.24:3000/gpt`
+    ];
 
-// GPT API에 요청을 보내는 함수 (서버에서 데이터 받아오기)
+    for (const url of urls) {
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ text }),
+            });
+
+            if (!response.ok) throw new Error('Network response was not ok');
+            return await response.json();
+        } catch (error) {
+            console.error(`${url} 요청 실패:`, error);
+        }
+    }
+
+    throw new Error("모든 요청이 실패했습니다.");
+}
+
 async function sendTextToGPT(text) {
-    //http://localhost:3000
-    try {
-        const response = await fetch("http://34.47.112.24:3000/gpt", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ text }),
-        });
+    if (!text) return; // 텍스트가 비어있으면 함수 종료
 
-        // 요청이 성공하면 응답을 JSON 형식으로 변환
-        const data = await response.json();
+    try {
+        const data = await fetchGPTResponse(text);
 
         // 받아온 데이터를 UI에 표시
         gptResponseElement.innerText = data.response;
@@ -80,43 +85,13 @@ async function sendTextToGPT(text) {
             gpt_score: data.percent
         };
 
-        // JSON 형식으로 변환하여 로컬스토리지에 저장
         localStorage.setItem('gptData', JSON.stringify(gptData));
 
-        // 콘솔에 저장된 값 확인
         console.log('Stored emotionNum:', data.emotionNum);
         console.log('Stored percent:', data.percent);
 
     } catch (error) {
-        console.error("HTTP 요청 실패:", error);
-
-        // HTTP 요청이 실패하면 HTTPS로 요청
-        try {
-            const response = await fetch("https://34.47.112.24:3000/gpt", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ text }),
-            });
-
-            const data = await response.json();
-            gptResponseElement.innerText = data.response;
-
-            const gptData = {
-                gpt_emotion: data.emotionNum,
-                gpt_score: data.percent
-            };
-
-            localStorage.setItem('gptData', JSON.stringify(gptData));
-
-            console.log('Stored emotionNum:', data.emotionNum);
-            console.log('Stored percent:', data.percent);
-
-        } catch (error) {
-            console.error("HTTPS 요청 실패:", error);
-            gptResponseElement.innerText = "GPT 응답을 가져오는 데 실패했습니다.";
-        }
+        console.error("GPT 응답을 가져오는 데 실패했습니다.", error);
+        gptResponseElement.innerText = "GPT 응답을 가져오는 데 실패했습니다.";
     }
 }
-

@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const OpenAI = require("openai");
-const http = require("http");
+const https = require("https");
 const WebSocket = require("ws");
 require("dotenv").config();
 
@@ -87,7 +87,7 @@ app.post("/gpt", async (req, res) => {
 });
 
 // WebSocket 서버 설정
-const server = http.createServer(app);
+const server = https.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 // WebSocket 연결 처리
