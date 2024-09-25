@@ -46,8 +46,7 @@ recognition.onresult = (event) => {
 // GPT API에 요청을 보내는 함수
 async function fetchGPTResponse(text) {
     const urls = [
-        `https://34.47.112.24:3000/gpt`,
-        `http://34.47.112.24:3000/gpt`
+        `https://34.54.27.235:3000/gpt`,
     ];
 
     for (const url of urls) {

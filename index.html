@@ -1,76 +1,108 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>시작 페이지</title>
     <style>
-      /* 배경 영상과 전체 레이아웃 설정 */
-      body,
-      html {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
+        /* 배경 영상과 전체 레이아웃 설정 */
+        body,
+        html {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-      /* 배경 영상을 화면에 꽉 채우기 */
-      #bg-video {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        z-index: -1; /* 콘텐츠 뒤에 배치 */
-      }
+        /* 배경 영상을 화면에 꽉 채우기 */
+        #bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1; /* 콘텐츠 뒤에 배치 */
+        }
 
-      h1 {
-        color: white;
-        text-align: center;
-        margin-top: 20%;
-        font-size: 3em;
-      }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-top: 20%;
+            font-size: 3em;
+        }
 
-      .button-container {
-        width: 100%;
-        display: flex;
-        justify-content: space-around; /* 버튼 사이에 균등한 간격을 만듭니다 */
-        padding: 0 100px; /* 좌우 여백 100px 설정 */
-        margin-bottom: 150px;
-        position: absolute;
-        bottom: 20%;
-      }
+        .button-container {
+            width: 100%;
+            display: flex;
+            justify-content: space-around; /* 버튼 사이에 균등한 간격을 만듭니다 */
+            padding: 0 100px; /* 좌우 여백 100px 설정 */
+            margin-bottom: 150px;
+            position: absolute;
+            bottom: 20%;
+        }
 
-      button {
-        color: white; /* 폰트 색상을 흰색으로 변경 */
-        padding: 20px 40px;
-        font-size: 2em;
-        background: linear-gradient(to bottom, #1f0d68, #461cbb); /* 그라데이션 적용 */
-        border: none;
-        border-radius: 15px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-    
+        button {
+            color: white; /* 폰트 색상을 흰색으로 변경 */
+            padding: 20px 40px;
+            font-size: 2em;
+            background: linear-gradient(to bottom, #1f0d68, #461cbb); /* 그라데이션 적용 */
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
 
-    button:hover {
-      background: linear-gradient(to right, rgb(203, 190, 255), rgb(150, 136, 255)); /* 호버 시 그라데이션 */
-  }
+        button:hover {
+            background: linear-gradient(to right, rgb(203, 190, 255), rgb(150, 136, 255)); /* 호버 시 그라데이션 */
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <video id="bg-video" autoplay muted loop>
-      <source src="/video/base.mp4" type="video/mp4" />
+        <source src="/video/base.mp4" type="video/mp4" />
     </video>
 
     <div class="button-container">
-      <button onclick="location.href='face.html'">감정 분석</button>
-      <button onclick="location.href='intro.html'">작품 설명</button>
+        <button onclick="location.href='face.html'">감정 분석</button>
+        <button onclick="location.href='intro.html'">작품 설명</button>
     </div>
-  </body>
+
+    <div class="button-container" style="bottom: 10%;">
+        <button onclick="sendNumberToServer(1)">1</button>
+        <button onclick="sendNumberToServer(2)">2</button>
+        <button onclick="sendNumberToServer(3)">3</button>
+        <button onclick="sendNumberToServer(4)">4</button>
+        <button onclick="sendNumberToServer(5)">5</button>
+    </div>
+
+    <script>
+        function sendNumberToServer(number) {
+            fetch('https://34.22.75.84:3000/gpt', { // 서버 URL을 실제 서버 주소로 변경하세요
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: number })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('서버 응답:', data);
+                // 서버 응답 처리 로직 추가 가능
+            })
+            .catch(error => {
+                console.error('서버로 전송 중 오류 발생:', error);
+            });
+        }
+    </script>
+</body>
 </html>

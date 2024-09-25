@@ -9,7 +9,9 @@ const app = express();
 const port = 3000;
 
 // CORS 설정
-app.use(cors());
+app.use(cors({
+  origin: '*', // 모든 Origin 허용
+}));
 
 // OpenAI API 설정
 const openai = new OpenAI({
@@ -135,7 +137,6 @@ wss.on("connection", (ws) => {
   });
 });
 
-// 서버 실행
 server.listen(port, () => {
-  console.log(`Server is run`);
+  console.log(`서버가 ${port} 포트에서 실행 중입니다.`);
 });
