@@ -59,7 +59,9 @@ recognition.onresult = (event) => {
 // GPT API에 요청을 보내는 함수 (서버에서 데이터 받아오기)
 async function sendTextToGPT(text) {
     try {
-        const response = await fetch("http://34.47.112.24:3000", {
+        //http://34.47.112.24:3000
+        //http://localhost:3000
+        const response = await fetch("http://34.47.112.24:3000/gpt", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
