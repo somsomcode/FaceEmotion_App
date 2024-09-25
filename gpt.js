@@ -48,18 +48,18 @@ recognition.onresult = (event) => {
     recognizedTextElement.innerText = finalTranscript; // 실시간으로 업데이트
 };
 
-// 사용자 텍스트 입력 후 전송 버튼 클릭 이벤트
-sendTextButton.addEventListener('click', () => {
-    const userInputText = userInput.value.trim(); // 사용자 입력 텍스트 가져오기
-    if (userInputText) {
-        sendTextToGPT(userInputText); // 사용자가 입력한 텍스트를 GPT에 전송
-    }
-});
+// // 사용자 텍스트 입력 후 전송 버튼 클릭 이벤트
+// sendTextButton.addEventListener('click', () => {
+//     const userInputText = userInput.value.trim(); // 사용자 입력 텍스트 가져오기
+//     if (userInputText) {
+//         sendTextToGPT(userInputText); // 사용자가 입력한 텍스트를 GPT에 전송
+//     }
+// });
 
 // GPT API에 요청을 보내는 함수 (서버에서 데이터 받아오기)
 async function sendTextToGPT(text) {
     try {
-        const response = await fetch("http://localhost:3000/gpt", {
+        const response = await fetch("http://34.47.112.24:3000", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
