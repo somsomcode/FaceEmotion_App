@@ -61,7 +61,7 @@ async function sendTextToGPT(text) {
     try {
         //http://34.47.112.24:3000
         //http://localhost:3000
-        const response = await fetch("http://34.47.112.24:3000/gpt", {
+        const response = await fetch("https://34.47.112.24:3000/gpt", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
