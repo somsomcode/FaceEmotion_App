@@ -58,24 +58,23 @@ recognition.onresult = (event) => {
 
 // GPT API에 요청을 보내는 함수 (서버에서 데이터 받아오기)
 async function sendTextToGPT(text) {
+    //http://localhost:3000
     try {
-        //http://34.47.112.24:3000
-        //http://localhost:3000
-        const response = await fetch("https://34.47.112.24:3000/gpt", {
+        const response = await fetch("http://34.47.112.24:3000/gpt", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ text }), // 음성 인식된 최종 텍스트 또는 사용자 입력 텍스트를 전송
+            body: JSON.stringify({ text }),
         });
 
-        // 서버에서 JSON 응답 받아오기
+        // 요청이 성공하면 응답을 JSON 형식으로 변환
         const data = await response.json();
 
         // 받아온 데이터를 UI에 표시
         gptResponseElement.innerText = data.response;
 
-       // emotionNum과 percent를 객체로 만들고 로컬스토리지에 저장
+        // emotionNum과 percent를 객체로 만들고 로컬스토리지에 저장
         const gptData = {
             gpt_emotion: data.emotionNum,
             gpt_score: data.percent
@@ -89,7 +88,35 @@ async function sendTextToGPT(text) {
         console.log('Stored percent:', data.percent);
 
     } catch (error) {
-        console.error("GPT 요청 실패:", error);
-        gptResponseElement.innerText = "GPT 응답을 가져오는 데 실패했습니다.";
+        console.error("HTTP 요청 실패:", error);
+
+        // HTTP 요청이 실패하면 HTTPS로 요청
+        try {
+            const response = await fetch("https://34.47.112.24:3000/gpt", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ text }),
+            });
+
+            const data = await response.json();
+            gptResponseElement.innerText = data.response;
+
+            const gptData = {
+                gpt_emotion: data.emotionNum,
+                gpt_score: data.percent
+            };
+
+            localStorage.setItem('gptData', JSON.stringify(gptData));
+
+            console.log('Stored emotionNum:', data.emotionNum);
+            console.log('Stored percent:', data.percent);
+
+        } catch (error) {
+            console.error("HTTPS 요청 실패:", error);
+            gptResponseElement.innerText = "GPT 응답을 가져오는 데 실패했습니다.";
+        }
     }
 }
+
