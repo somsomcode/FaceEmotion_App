@@ -1,19 +1,16 @@
 const express = require("express");
 const cors = require("cors");
 const OpenAI = require("openai");
-const https = require("https");
+const http = require("http");
 const WebSocket = require("ws");
 require("dotenv").config();
 
 const app = express();
 const port = 3000;
 
-// CORS 설정
-app.use(cors({
-  origin: '*', // 모든 Origin 허용
-}));
-
+app.use(cors()); // 모든 요청에 대해 CORS 허용
 // OpenAI API 설정
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -89,7 +86,7 @@ app.post("/gpt", async (req, res) => {
 });
 
 // WebSocket 서버 설정
-const server = https.createServer(app);
+const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 // WebSocket 연결 처리

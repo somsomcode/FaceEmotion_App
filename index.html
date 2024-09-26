@@ -45,6 +45,18 @@
             position: absolute;
             bottom: 20%;
         }
+        .button-container2 {
+          position: fixed;
+          width: 100%;
+          justify-content: center; /* 버튼을 중앙에 배치 */
+          position: absolute;
+          bottom: 20%; /* 화면 하단에서 20% 위에 위치 */
+        }
+        .button-container2 button {
+          margin: 0 10px; /* 버튼 사이에 간격을 추가 */
+          padding: 10px 20px; /* 버튼의 크기를 조정 */
+          font-size: 16px;
+        }
 
         button {
             color: white; /* 폰트 색상을 흰색으로 변경 */
@@ -58,7 +70,23 @@
         }
 
         button:hover {
-            background: linear-gradient(to right, rgb(203, 190, 255), rgb(150, 136, 255)); /* 호버 시 그라데이션 */
+          background: linear-gradient(to right, #2575fc, #6a11cb); /* 호버 시 그라데이션 반전 */
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 강하게 */
+          transform: translateY(-3px); /* 호버 시 버튼이 살짝 올라가는 효과 */
+        }
+
+        #toggleButton {
+          position: fixed;
+          top: 5px;
+          right: 5px;
+          font-size: 8px; /* 버튼 크기를 줄입니다 */
+          padding: 5px 10px; /* 버튼 여백을 줄입니다 */
+          background-color: #333;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          opacity: 0.3; /* 버튼 투명도를 설정합니다 */
         }
     </style>
 </head>
@@ -68,11 +96,13 @@
     </video>
 
     <div class="button-container">
-        <button onclick="location.href='face.html'">감정 분석</button>
+        <button onclick="location.href='cam-load.html'">감정 분석</button>
         <button onclick="location.href='intro.html'">작품 설명</button>
     </div>
 
-    <div class="button-container" style="bottom: 10%;">
+    <button id="toggleButton" onclick="toggleButtons()"></button>
+
+    <div class="button-container2" id="buttonContainer" style="display: none;">
         <button onclick="sendNumberToServer(1)">1</button>
         <button onclick="sendNumberToServer(2)">2</button>
         <button onclick="sendNumberToServer(3)">3</button>
@@ -81,8 +111,27 @@
     </div>
 
     <script>
+      const SERVER_URL = "http://localhost:3000/gpt";
+
+      function toggleButtons() {
+        const buttonContainer = document.getElementById('buttonContainer');
+        const toggleButton = document.getElementById('toggleButton');
+        
+        // 현재 buttonContainer의 실제 display 속성을 가져옴
+        const currentDisplay = window.getComputedStyle(buttonContainer).display;
+        
+        if (currentDisplay === 'none') {
+          buttonContainer.style.display = 'block';
+          toggleButton.textContent = 'osc';
+        } else {
+          buttonContainer.style.display = 'none';
+          toggleButton.textContent = 'osc';
+        }
+      }
+
+
         function sendNumberToServer(number) {
-            fetch('https://34.22.75.84:3000/gpt', { // 서버 URL을 실제 서버 주소로 변경하세요
+            fetch(SERVER_URL, { // 서버 URL을 실제 서버 주소로 변경하세요
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

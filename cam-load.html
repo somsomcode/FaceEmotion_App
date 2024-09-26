@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>표정 인식 카메라 준비</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #16043c, #403d82); /* 그라디언트 배경 */
+      color: white;
+      font-family: Arial, sans-serif;
+      font-size: 20px;
+      text-align: center;
+    }
+    #countdown {
+      font-size: 48px;
+      margin-top: 20px;
+    }
+  </style>
+  <!-- face.html을 미리 로드 -->
+  <link rel="preload" href="face.html" as="document">
+</head>
+<body>
+  <div>
+    <p>표정 인식을 위한 카메라가 시작됩니다.<br><br>
+      오늘 당신의 하루를 떠올리며 카메라를 향해 다양한 표정을 지어보세요.<br>
+      당신의 표정에서 일상, 화남, 두려움, 행복, 슬픔, 놀람 6개의 감정을 도출합니다.
+    </p>
+    <p id="countdown">5</p>
+  </div>
+
+  <script>
+    let countdown = 5;
+    const countdownElement = document.getElementById('countdown');
+    let stream = null;
+
+    // 카메라를 미리 로드하기 위해 getUserMedia 호출
+    function preloadCamera() {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(mediaStream => {
+          stream = mediaStream;
+          console.log("카메라 스트림을 미리 로드했습니다.");
+        })
+        .catch(error => {
+          console.error("카메라 접근 실패:", error);
+        });
+    }
+
+    // 카운트다운과 페이지 이동
+    const countdownInterval = setInterval(() => {
+      countdown--;
+      countdownElement.textContent = countdown;
+
+      if (countdown === 0) {
+        clearInterval(countdownInterval);
+        if (stream) {
+          // 카메라 스트림이 있는 경우, face.html로 이동
+          window.location.href = "face.html";
+        }
+      }
+    }, 1000);
+
+    // 페이지가 로드될 때 카메라 스트림을 미리 가져옴
+    preloadCamera();
+  </script>
+</body>
+</html>
