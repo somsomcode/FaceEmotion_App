@@ -7,7 +7,9 @@ const sendTextButton = document.getElementById('sendTextButton'); // 텍스트 �
 const sendVoiceButton = document.getElementById('sendVoiceButton'); // 음성 인식 데이터 전송 버튼
 
 // GPT 호출 주소를 상단에서 관리
-const GPT_API_URL = "http://localhost:3000/gpt";
+//https://port-0-faceemotion-app-m0xnhece5b39a09d.sel4.cloudtype.app/
+//http://localhost:3000/gpt
+const GPT_API_URL = "https://main-activity.com/gpt";
 
 // 음성 인식 설정
 const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
@@ -39,6 +41,7 @@ startButton.addEventListener('click', () => {
         recognition.stop(); // 15초 후 음성 인식 중지
         startButton.disabled = false; // 버튼 다시 활성화
         clearInterval(countdown); // 타이머 종료
+        sendTextToGPT(finalTranscript); // 음성 인식된 텍스트를 GPT에 전송
     }, 15000); // 15초
 });
 
