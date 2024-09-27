@@ -11,7 +11,7 @@ const finalExpressionResultElement = document.getElementById("finalExpressionRes
 const timerElement = document.getElementById("timer"); // 타이머 요소
 
 // 타이머 시간을 상단에서 설정
-const TIMER_DURATION = 10; // 타이머 시간을 수정하려면 이 값을 변경
+const TIMER_DURATION = 5; // 타이머 시간을 수정하려면 이 값을 변경
 
 // 페이지 로드 시 카메라 자동 시작
 window.onload = function() {
@@ -77,7 +77,7 @@ async function handleEmotionAnalysis() {
     try {
         await analyzeFinalEmotion(); // 감정 분석
         console.log("감정 분석이 완료되었습니다.");
-        redirectToNextPage("gpt-load.html", 1000); // 페이지 이동
+        redirectToNextPage("gpt.html", 1000); // 페이지 이동
     } catch (error) {
         console.error("감정 분석 중 오류 발생:", error);
     }
@@ -159,7 +159,7 @@ function updateExpressionResults(expressions) {
     `;
 }
 
-// 종합 감정 분석 함수
+// 종합 감정 분석 함수 (가중치 3배 적용)
 async function analyzeFinalEmotion() {
     const averagedExpressions = {
         neutral: 0,
@@ -171,15 +171,15 @@ async function analyzeFinalEmotion() {
         fearful: 0,
     };
 
-    // 표정 데이터 평균 계산
+    // 표정 데이터 평균 계산 (가중치 3배 적용)
     expressionDataArray.forEach((expressions) => {
-        averagedExpressions.neutral += expressions.neutral;
-        averagedExpressions.happy += expressions.happy;
-        averagedExpressions.angry += expressions.angry;
-        averagedExpressions.sad += expressions.sad;
-        averagedExpressions.disgusted += expressions.disgusted;
-        averagedExpressions.surprised += expressions.surprised;
-        averagedExpressions.fearful += expressions.fearful;
+        averagedExpressions.neutral += expressions.neutral; // neutral은 가중치 없음
+        averagedExpressions.happy += expressions.happy * 3; // 3배 가중치 적용
+        averagedExpressions.angry += expressions.angry * 3; // 3배 가중치 적용
+        averagedExpressions.sad += expressions.sad * 3; // 3배 가중치 적용
+        averagedExpressions.disgusted += expressions.disgusted * 3; // 3배 가중치 적용
+        averagedExpressions.surprised += expressions.surprised * 3; // 3배 가중치 적용
+        averagedExpressions.fearful += expressions.fearful * 3; // 3배 가중치 적용
     });
 
     const totalFrames = expressionDataArray.length;
@@ -213,8 +213,8 @@ async function analyzeFinalEmotion() {
     localStorage.setItem('faceData', JSON.stringify(faceData)); // 로컬 스토리지에 저장
 
     // 결과가 0일 경우 안내
-    if (mappedExpression === 0) {
-        alert("인식된 표정이 없습니다. 다시 시작해 주세요.");
-        location.reload(); // 페이지 새로 고침
-    }
+    // if (mappedExpression === 0) {
+    //     alert("인식된 표정이 없습니다. 다시 시작해 주세요.");
+    //     location.reload(); // 페이지 새로 고침
+    // }
 }

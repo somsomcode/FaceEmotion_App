@@ -1,6 +1,6 @@
 // 1. 가중치 설정 (상단에서 수정 가능)
-const faceWeight = 6; // 표정 데이터 가중치
-const gptWeight = 4;  // 음성 데이터 가중치
+const faceWeight = 3; // 표정 데이터 가중치
+const gptWeight = 7;  // 음성 데이터 가중치
 
 // 2. 로컬 스토리지에서 데이터를 가져옴
 const gptData = JSON.parse(localStorage.getItem('gptData'));

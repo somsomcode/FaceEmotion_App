@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>로딩 비디오</title>
+    <title>로딩 화면</title>
     <style>
       body,
       html {
@@ -12,16 +12,9 @@
         height: 100%;
         overflow: hidden;
         font-family: Arial, sans-serif;
-      }
-
-      .bg-video {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        z-index: -1;
+        background: linear-gradient(270deg, #ff6f61, #6a11cb, #2575fc, #ff6f61);
+        background-size: 800% 800%;
+        animation: gradientAnimation 10s ease infinite;
       }
 
       .loading-text {
@@ -35,25 +28,30 @@
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         z-index: 1;
       }
+
+      @keyframes gradientAnimation {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
     </style>
   </head>
   <body>
-    <video id="loadingVideo" autoplay muted class="bg-video">
-      <source src="/video/load.mp4" type="video/mp4" />
-      비디오를 지원하지 않는 브라우저입니다.
-    </video>
-
     <div class="loading-text">결과 분석 중...</div>
 
     <script>
-      const video = document.getElementById("loadingVideo");
-
-      // 비디오 끝나면 fin.html로 이동
-      video.addEventListener("ended", function () {
+      // 3초 후에 fin.html로 이동
+      setTimeout(function () {
         window.location.href = "fin.html";
-      });
+      }, 3000);
 
-      // 화면 클릭하면 fin.html로 이동
+      // 화면 클릭하면 즉시 fin.html로 이동
       document.body.addEventListener("click", function () {
         window.location.href = "fin.html";
       });

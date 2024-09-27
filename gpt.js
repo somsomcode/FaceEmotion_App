@@ -12,10 +12,11 @@ recognition.lang = "ko-KR"; // 한국어로 설정
 recognition.continuous = true; // 연속 인식 활성화
 recognition.interimResults = false; // 중간 결과는 표시하지 않음
 
+const TIMER_DURATION = 10; // 타이머 시간 저장 (초 단위)
 let countdown = null; // 타이머 카운트다운 저장할 변수
 let finalTranscript = ''; // 음성 인식된 최종 텍스트 저장 변수
 let isRecognizing = false; // 음성 인식이 진행 중인지 여부
-let timeLeft = 15; // 타이머 시간 저장
+let timeLeft = TIMER_DURATION; // 타이머 시간 저장
 
 // 타이머 초기화 및 시작 함수
 function startTimer() {
@@ -43,7 +44,7 @@ function startTimer() {
 function stopTimer() {
     clearInterval(countdown); // 타이머 종료
     countdown = null; // 타이머 변수를 초기화
-    timeLeft = 15; // 타이머 리셋
+    timeLeft = TIMER_DURATION; // 타이머 리셋
     timerElement.innerText = timeLeft; // UI에서 타이머 리셋
 }
 
@@ -51,9 +52,9 @@ function stopTimer() {
 startButton.addEventListener('click', () => {
     if (!isRecognizing) {
         // 음성 인식이 중지된 상태면 시작
-        if (timeLeft === 15 || countdown === null) {
+        if (timeLeft === TIMER_DURATION || countdown === null) {
             finalTranscript = ''; // 이전 인식 결과 초기화
-            timeLeft = 15; // 타이머 리셋
+            timeLeft = TIMER_DURATION; // 타이머 리셋
             startTimer(); // 타이머 시작
         }
 
