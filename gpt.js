@@ -3,28 +3,22 @@ const recognizedTextElement = document.getElementById('recognizedText');
 const gptResponseElement = document.getElementById('gptResponse');
 const timerElement = document.getElementById('timer'); // 타이머 요소
 const userInput = document.getElementById('userInput');
-const sendTextButton = document.getElementById('sendTextButton'); // 텍스트 전송 버튼
-const sendVoiceButton = document.getElementById('sendVoiceButton'); // 음성 인식 데이터 전송 버튼
 
-// GPT 호출 주소를 상단에서 관리
-//https://port-0-faceemotion-app-m0xnhece5b39a09d.sel4.cloudtype.app/
-//http://localhost:3000/gpt
-const GPT_API_URL = "https://main-activity.com/gpt";
+const GPT_API_URL = "https://main-activity.com/gpt"; // GPT 호출 주소
 
 // 음성 인식 설정
 const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
 recognition.lang = "ko-KR"; // 한국어로 설정
-recognition.continuous = true; // 연속 인식
+recognition.continuous = true; // 연속 인식 활성화
 recognition.interimResults = false; // 중간 결과는 표시하지 않음
 
 let countdown; // 타이머 카운트다운 저장할 변수
 let finalTranscript = ''; // 음성 인식된 최종 텍스트 저장 변수
+let isRecognizing = false; // 음성 인식이 진행 중인지 여부
+let timeLeft = 15; // 타이머 시간 저장
 
-// 음성 인식이 시작되면 호출되는 함수
-startButton.addEventListener('click', () => {
-    recognition.start();
-    startButton.disabled = true; // 버튼 비활성화
-    let timeLeft = 15; // 15초 설정
+// 타이머 초기화 및 시작 함수
+function startTimer() {
     timerElement.innerText = timeLeft; // 초기 타이머 값 설정
 
     // 1초마다 카운트다운
@@ -34,15 +28,36 @@ startButton.addEventListener('click', () => {
 
         if (timeLeft <= 0) {
             clearInterval(countdown); // 타이머 종료
+            recognition.stop(); // 타이머가 0이 되면 음성 인식 종료
         }
     }, 1000);
+}
 
-    setTimeout(() => {
-        recognition.stop(); // 15초 후 음성 인식 중지
-        startButton.disabled = false; // 버튼 다시 활성화
-        clearInterval(countdown); // 타이머 종료
-        sendTextToGPT(finalTranscript); // 음성 인식된 텍스트를 GPT에 전송
-    }, 15000); // 15초
+// 타이머 및 음성 인식 중지 함수
+function stopTimer() {
+    clearInterval(countdown); // 타이머 종료
+}
+
+// 음성 인식이 시작되면 호출되는 함수
+startButton.addEventListener('click', () => {
+    if (isRecognizing) {
+        // 음성 인식 중이면 일시정지
+        recognition.stop(); // 음성 인식 중지
+        startButton.innerText = "녹음 시작";
+        isRecognizing = false;
+        stopTimer(); // 타이머 종료
+    } else {
+        // 음성 인식이 중지된 상태면 시작
+        recognition.start(); // 음성 인식 시작
+        startButton.innerText = "녹음 일시정지";
+        isRecognizing = true;
+
+        if (timeLeft === 15) {
+            finalTranscript = ''; // 이전 인식 결과 초기화
+        }
+
+        startTimer(); // 타이머 시작
+    }
 });
 
 // 음성 인식 시작 시 녹음 중... 메시지 표시
@@ -57,13 +72,20 @@ recognition.onresult = (event) => {
     recognizedTextElement.innerText = finalTranscript; // 실시간으로 업데이트
 };
 
+// 음성 인식이 종료되면 GPT에 텍스트 자동 전송
+recognition.onend = () => {
+    if (timeLeft <= 0) {
+        // 타이머가 0이 되었을 때만 GPT에 전송
+        startButton.innerText = "녹음 시작"; // 버튼 상태 복구
+        isRecognizing = false;
+        stopTimer(); // 타이머 종료 및 초기화
+        timeLeft = 15; // 타이머 리셋
 
-// 음성 인식 데이터를 GPT로 전송하는 버튼 이벤트 추가
-sendVoiceButton.addEventListener('click', () => {
-    if (finalTranscript.trim()) {
-        sendTextToGPT(finalTranscript); // 음성 인식된 텍스트를 GPT에 전송
+        if (finalTranscript.trim()) {
+            sendTextToGPT(finalTranscript); // 음성 인식된 텍스트를 GPT에 전송
+        }
     }
-});
+};
 
 // GPT API에 요청을 보내는 함수 (서버에서 데이터 받아오기)
 async function sendTextToGPT(text) {
@@ -73,7 +95,7 @@ async function sendTextToGPT(text) {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ text }), // 음성 인식된 최종 텍스트 또는 사용자 입력 텍스트를 전송
+            body: JSON.stringify({ text }), // 음성 인식된 최종 텍스트 전송
         });
 
         // 서버에서 JSON 응답 받아오기
