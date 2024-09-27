@@ -1,7 +1,7 @@
 {
     "name": "somsom PWA App",
     "short_name": "PWA",
-    "start_url": "/",
+    "start_url": "https://luminousmelody.netlify.app/",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#000000"
