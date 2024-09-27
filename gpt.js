@@ -12,23 +12,29 @@ recognition.lang = "ko-KR"; // 한국어로 설정
 recognition.continuous = true; // 연속 인식 활성화
 recognition.interimResults = false; // 중간 결과는 표시하지 않음
 
-let countdown; // 타이머 카운트다운 저장할 변수
+let countdown = null; // 타이머 카운트다운 저장할 변수
 let finalTranscript = ''; // 음성 인식된 최종 텍스트 저장 변수
 let isRecognizing = false; // 음성 인식이 진행 중인지 여부
 let timeLeft = 15; // 타이머 시간 저장
 
 // 타이머 초기화 및 시작 함수
 function startTimer() {
+    if (countdown !== null) {
+        return; // 타이머가 이미 실행 중이면 다시 시작하지 않음
+    }
+
     timerElement.innerText = timeLeft; // 초기 타이머 값 설정
 
-    // 1초마다 카운트다운
     countdown = setInterval(() => {
-        timeLeft--;
-        timerElement.innerText = timeLeft;
+        if (isRecognizing) { // 음성 인식이 진행 중일 때만 타이머가 감소함
+            timeLeft--;
+            timerElement.innerText = timeLeft;
 
-        if (timeLeft <= 0) {
-            clearInterval(countdown); // 타이머 종료
-            recognition.stop(); // 타이머가 0이 되면 음성 인식 종료
+            if (timeLeft <= 0) {
+                clearInterval(countdown); // 타이머 종료
+                countdown = null; // 타이머 변수를 초기화
+                recognition.stop(); // 타이머가 0이 되면 음성 인식 종료
+            }
         }
     }, 1000);
 }
@@ -36,27 +42,27 @@ function startTimer() {
 // 타이머 및 음성 인식 중지 함수
 function stopTimer() {
     clearInterval(countdown); // 타이머 종료
+    countdown = null; // 타이머 변수를 초기화
+    timeLeft = 15; // 타이머 리셋
+    timerElement.innerText = timeLeft; // UI에서 타이머 리셋
 }
 
 // 음성 인식이 시작되면 호출되는 함수
 startButton.addEventListener('click', () => {
-    if (isRecognizing) {
-        // 음성 인식 중이면 일시정지
-        recognition.stop(); // 음성 인식 중지
-        startButton.innerText = "녹음 시작";
-        isRecognizing = false;
-        stopTimer(); // 타이머 종료
-    } else {
+    if (!isRecognizing) {
         // 음성 인식이 중지된 상태면 시작
-        recognition.start(); // 음성 인식 시작
-        startButton.innerText = "녹음 일시정지";
-        isRecognizing = true;
-
-        if (timeLeft === 15) {
+        if (timeLeft === 15 || countdown === null) {
             finalTranscript = ''; // 이전 인식 결과 초기화
+            timeLeft = 15; // 타이머 리셋
+            startTimer(); // 타이머 시작
         }
 
-        startTimer(); // 타이머 시작
+        recognition.start(); // 음성 인식 시작
+        isRecognizing = true;
+
+        // 버튼 비활성화 및 텍스트 변경
+        startButton.disabled = true;
+        startButton.innerText = "녹음 중..."; // 중지라는 단어 대신 녹음 중...으로 표시
     }
 });
 
@@ -74,16 +80,15 @@ recognition.onresult = (event) => {
 
 // 음성 인식이 종료되면 GPT에 텍스트 자동 전송
 recognition.onend = () => {
-    if (timeLeft <= 0) {
-        // 타이머가 0이 되었을 때만 GPT에 전송
-        startButton.innerText = "녹음 시작"; // 버튼 상태 복구
-        isRecognizing = false;
-        stopTimer(); // 타이머 종료 및 초기화
-        timeLeft = 15; // 타이머 리셋
+    isRecognizing = false;
+    stopTimer(); // 타이머 종료
 
-        if (finalTranscript.trim()) {
-            sendTextToGPT(finalTranscript); // 음성 인식된 텍스트를 GPT에 전송
-        }
+    // 버튼을 다시 활성화하고 텍스트를 복구
+    startButton.disabled = false;
+    startButton.innerText = "녹음 시작";
+
+    if (finalTranscript.trim()) {
+        sendTextToGPT(finalTranscript); // 음성 인식된 텍스트를 GPT에 전송
     }
 };
 
@@ -98,22 +103,15 @@ async function sendTextToGPT(text) {
             body: JSON.stringify({ text }), // 음성 인식된 최종 텍스트 전송
         });
 
-        // 서버에서 JSON 응답 받아오기
         const data = await response.json();
-
-        // 받아온 데이터를 UI에 표시
         gptResponseElement.innerText = data.response;
 
-        // emotionNum과 percent를 객체로 만들고 로컬스토리지에 저장
         const gptData = {
             gpt_emotion: data.emotionNum,
             gpt_score: data.percent
         };
 
-        // JSON 형식으로 변환하여 로컬스토리지에 저장
         localStorage.setItem('gptData', JSON.stringify(gptData));
-
-        // 콘솔에 저장된 값 확인
         console.log('Stored emotionNum:', data.emotionNum);
         console.log('Stored percent:', data.percent);
 
