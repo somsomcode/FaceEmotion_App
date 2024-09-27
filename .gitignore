@@ -1,3 +1,4 @@
 .env
 sketch.js
 video/
+node_modules/
