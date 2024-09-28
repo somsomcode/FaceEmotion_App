@@ -29,6 +29,8 @@
             height: 100%;
             object-fit: cover;
             z-index: -1;
+            min-width: 100vw; /* 최소 너비를 100%로 설정 */
+            min-height: 100vh; /* 최소 높이를 100%로 설정 */
         }
 
         h1 {
@@ -108,6 +110,10 @@
 
         /* 갤럭시 탭을 포함한 작은 화면에 대한 반응형 설정 */
         @media (max-width: 1024px) {
+            #bg-video {
+                object-fit: contain; /* 작은 화면에서는 비율에 맞춰 영상을 표시 */
+            }
+
             .button-container, .button-container2 {
                 padding: 0 50px;
                 bottom: 10%; /* 작은 화면에서 버튼이 더 가까워지도록 */

@@ -11,29 +11,50 @@ const gptScore = parseFloat(gptData.gpt_score);
 const faceScore = parseFloat(faceData.face_score);
 
 // 4. 가중 평균 계산 (설정된 가중치 사용)
-const weightedAverageScore = ((faceScore * faceWeight) + (gptScore * gptWeight)) / (faceWeight + gptWeight);
+let weightedAverageScore = ((faceScore * faceWeight) + (gptScore * gptWeight)) / (faceWeight + gptWeight);
 
 // 5. 최종 감정 결정 로직
 let finalEmotion = '';
+
+// 두 감정의 가중 점수를 계산
+const gptWeightedScore = gptScore * gptWeight;
+const faceWeightedScore = faceScore * faceWeight;
+
+// 가중 점수 배열을 생성
+const scores = [
+    { emotion: gptData.gpt_emotion, score: gptWeightedScore },
+    { emotion: faceData.face_emotion, score: faceWeightedScore }
+];
+
+// 점수를 내림차순으로 정렬
+scores.sort((a, b) => b.score - a.score);
+
+// 6. 최종 감정 선택 로직
 if (gptData.gpt_emotion === faceData.face_emotion) {
     // 두 감정이 일치하면 그 감정을 최종 감정으로 설정
     finalEmotion = gptData.gpt_emotion;
 } else {
-    // 감정이 다를 경우, 가중치에 따른 점수가 더 높은 감정을 선택
-    finalEmotion = faceScore * faceWeight > gptScore * gptWeight ? faceData.face_emotion : gptData.gpt_emotion;
+    // 가중치 점수가 가장 높은 감정을 선택
+    finalEmotion = scores[0].score > 0 ? scores[0].emotion : scores[1].emotion;
 }
 
-// 6. 최종 결과
+// 7. 최종 결과
 const finalResult = {
     emotion: finalEmotion,
     weightedAverageScore: weightedAverageScore.toFixed(2) // 가중 평균 점수 (소수점 2자리)
 };
 
-// 7. 최종 감정 분석 결과 출력
-console.log(`최종 감정: ${finalEmotion}, 가중 평균 점수: ${finalResult.weightedAverageScore}`);
+// 8. 가중 평균 점수가 0인 경우 처리
+if (weightedAverageScore === 0) {
+    // 두 점수 모두 0이면 두 번째로 높은 점수를 사용
+    if (scores[0].score === 0 && scores[1].score > 0) {
+        finalResult.weightedAverageScore = scores[1].score.toFixed(2);
+    }
+}
 
-// 8. 로컬 스토리지에 최종 감정 분석 결과 저장
+// 9. 최종 감정 분석 결과 출력
+console.log(`최종 감정: ${finalResult.emotion}, 가중 평균 점수: ${finalResult.weightedAverageScore}`);
+
+// 10. 로컬 스토리지에 최종 감정 분석 결과 저장
 localStorage.setItem('finalEmotionResult', JSON.stringify(finalResult));
 console.log(finalResult);
-
-
