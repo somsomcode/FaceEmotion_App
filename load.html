@@ -5,18 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>로딩 화면</title>
     <style>
-      body,
-      html {
+      body, html {
         margin: 0;
         padding: 0;
         height: 100%;
         overflow: hidden;
         font-family: Arial, sans-serif;
-        background: linear-gradient(270deg, #ff6f61, #6a11cb, #2575fc, #ff6f61);
-        background-size: 800% 800%;
-        animation: gradientAnimation 10s ease infinite;
       }
 
+      /* 비디오를 화면 전체에 맞추기 */
+      #bg-video {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1; /* 텍스트보다 뒤에 오게 설정 */
+      }
+
+      /* 로딩 텍스트 스타일 */
       .loading-text {
         position: absolute;
         top: 50%;
@@ -28,21 +36,16 @@
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         z-index: 1;
       }
-
-      @keyframes gradientAnimation {
-        0% {
-          background-position: 0% 50%;
-        }
-        50% {
-          background-position: 100% 50%;
-        }
-        100% {
-          background-position: 0% 50%;
-        }
-      }
     </style>
   </head>
   <body>
+    <!-- 배경 영상 -->
+    <video id="bg-video" autoplay muted loop>
+      <source src="/video/load.mp4" type="video/mp4" />
+      비디오를 지원하지 않는 브라우저입니다.
+    </video>
+
+    <!-- 로딩 텍스트 -->
     <div class="loading-text">결과 분석 중...</div>
 
     <script>

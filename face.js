@@ -159,9 +159,9 @@ function updateExpressionResults(expressions) {
     `;
 }
 
-// 종합 감정 분석 함수 (가중치 3배 적용)
+// 종합 감정 분석 함수 (가중치 3배 적용 후 100% 기준 정규화, 행복에 가중치 없음)
 async function analyzeFinalEmotion() {
-    const averagedExpressions = {
+    const weightedExpressions = {
         neutral: 0,
         happy: 0,
         angry: 0,
@@ -171,26 +171,40 @@ async function analyzeFinalEmotion() {
         fearful: 0,
     };
 
-    // 표정 데이터 평균 계산 (가중치 3배 적용)
+    // 표정 데이터 평균 계산 및 가중치 적용 (행복은 가중치 적용하지 않음)
     expressionDataArray.forEach((expressions) => {
-        averagedExpressions.neutral += expressions.neutral; // neutral은 가중치 없음
-        averagedExpressions.happy += expressions.happy * 3; // 3배 가중치 적용
-        averagedExpressions.angry += expressions.angry * 3; // 3배 가중치 적용
-        averagedExpressions.sad += expressions.sad * 3; // 3배 가중치 적용
-        averagedExpressions.disgusted += expressions.disgusted * 3; // 3배 가중치 적용
-        averagedExpressions.surprised += expressions.surprised * 3; // 3배 가중치 적용
-        averagedExpressions.fearful += expressions.fearful * 3; // 3배 가중치 적용
+        weightedExpressions.neutral += expressions.neutral; // neutral은 가중치 없음
+        weightedExpressions.happy += expressions.happy; // happy는 가중치 없음
+        weightedExpressions.angry += expressions.angry * 3; // 3배 가중치 적용
+        weightedExpressions.sad += expressions.sad * 3; // 3배 가중치 적용
+        weightedExpressions.disgusted += expressions.disgusted * 3; // 3배 가중치 적용
+        weightedExpressions.surprised += expressions.surprised * 3; // 3배 가중치 적용
+        weightedExpressions.fearful += expressions.fearful * 3; // 3배 가중치 적용
     });
 
     const totalFrames = expressionDataArray.length;
-    for (let key in averagedExpressions) {
-        averagedExpressions[key] = (averagedExpressions[key] / totalFrames) * 100;
+
+    // 각 표정 값의 평균을 계산
+    for (let key in weightedExpressions) {
+        weightedExpressions[key] = (weightedExpressions[key] / totalFrames);
+    }
+
+    // 가중치를 적용한 값들의 총합 계산 (정규화 준비)
+    const totalWeightedSum = Object.values(weightedExpressions).reduce((acc, val) => acc + val, 0);
+
+    // 100% 기준으로 정규화
+    for (let key in weightedExpressions) {
+        weightedExpressions[key] = (weightedExpressions[key] / totalWeightedSum) * 100;
     }
 
     // 최종 감정 결과 도출
-    const finalExpression = Object.keys(averagedExpressions).reduce((a, b) =>
-        averagedExpressions[a] > averagedExpressions[b] ? a : b
+    const finalExpression = Object.keys(weightedExpressions).reduce((a, b) =>
+        weightedExpressions[a] > weightedExpressions[b] ? a : b
     );
+
+    // 콘솔에 결과 출력
+    console.log("Final Weighted Expressions:", weightedExpressions);
+    console.log("Final Detected Emotion:", finalExpression);
 
     const expressionMapping = {
         neutral: 0,
@@ -207,14 +221,8 @@ async function analyzeFinalEmotion() {
     // 로컬 스토리지에 최종 표정 결과 저장
     const faceData = {
         face_emotion: mappedExpression, // 숫자로 변환된 표정 결과
-        face_score: averagedExpressions[finalExpression].toFixed(2) // 퍼센트 값
+        face_score: weightedExpressions[finalExpression].toFixed(2) // 퍼센트 값
     };
 
     localStorage.setItem('faceData', JSON.stringify(faceData)); // 로컬 스토리지에 저장
-
-    // 결과가 0일 경우 안내
-    // if (mappedExpression === 0) {
-    //     alert("인식된 표정이 없습니다. 다시 시작해 주세요.");
-    //     location.reload(); // 페이지 새로 고침
-    // }
 }

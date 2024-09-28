@@ -30,7 +30,7 @@
         #result {
             font-size: 1.2rem;
             color: #fff;
-            background: linear-gradient(to bottom, #6155be, #100046);
+            background: linear-gradient(to bottom, #8b7bff, #3511ad);
             border-radius: 50%;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
             text-align: center;
@@ -42,7 +42,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center; /* 수평 중앙 정렬 */
+            align-items: center;
         }
 
         #buttonContainer {
@@ -53,7 +53,38 @@
             margin-top: 30px;
         }
 
-        button {
+        /* 결과 전송 버튼에 빛나는 테두리 */
+        #sendButton {
+            color: white;
+            padding: 15px 60px;
+            font-size: 1.2em;
+            background: linear-gradient(to bottom, #1f0d68, #461cbb);
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0px 0px 15px 2px rgb(145, 147, 255);
+            animation: glow 2s infinite ease-in-out; /* 빛나는 애니메이션 추가 */
+        }
+
+        #sendButton:hover {
+            background: linear-gradient(to right, #7375ff, #8430dd);
+            transform: translateY(-3px);
+        }
+
+        @keyframes glow {
+            0% {
+                box-shadow: 0px 0px 15px 4px rgba(180, 153, 255, 0.8);
+            }
+            50% {
+                box-shadow: 0px 0px 25px 6px rgba(180, 153, 255, 1);
+            }
+            100% {
+                box-shadow: 0px 0px 15px 4px rgba(180, 153, 255, 0.8);
+            }
+        }
+
+        #backButton {
             color: white;
             padding: 15px 60px;
             font-size: 1.2em;
@@ -64,7 +95,7 @@
             transition: background-color 0.3s ease;
         }
 
-        button:hover {
+        #backButton:hover {
             background: linear-gradient(to right, #2575fc, #6a11cb);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
             transform: translateY(-3px);
@@ -78,7 +109,7 @@
                 font-size: 1.1rem;
             }
 
-            button {
+            #sendButton, #backButton {
                 padding: 12px 40px;
                 font-size: 1em;
             }
@@ -91,7 +122,7 @@
                 font-size: 0.9rem;
             }
 
-            button {
+            #sendButton, #backButton {
                 padding: 10px 30px;
                 font-size: 0.9em;
             }
@@ -99,7 +130,7 @@
 
         /* 메시지 박스 스타일 */
         #messageBox {
-            display: none; /* 기본적으로 숨김 처리 */
+            display: none;
             position: fixed;
             top: 65%;
             left: 50%;
@@ -109,7 +140,7 @@
             border-radius: 10px;
             font-size: 1.2rem;
             text-align: center;
-            z-index: 9999; /* 화면 최상단에 표시 */
+            z-index: 9999;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
         }
 
@@ -118,7 +149,7 @@
 <body>
     <h1>최종 감정 분석 결과</h1>
     <br>
-    <p>당신의 표정과 음성 발화 데이터를 수집하여 분석한 결과 입니다. 결과를 전송하고 빛의 동굴을 경험하세요.</p>
+    <h3>당신의 표정과 음성 발화 데이터를 수집하여 분석한 결과 입니다. 결과를 전송하고 빛의 동굴을 경험하세요.</h3>
 
     <div id="result">
         <p><strong>최종 감정</strong> <br><span id="finalEmotion"></span></p>
@@ -134,12 +165,9 @@
     <div id="messageBox">감정 데이터를 빛의 동굴로 전송합니다.</div>
 
     <script>
-        // 상단에서 서버 URL을 관리
-        //http://localhost:3000/gpt
-
         const SERVER_URL = 'https://main-activity.com/gpt';
+        let inactivityTimer;
 
-        // 감정 인덱스에 따른 감정 매핑 객체
         const emotionMapping = {
             0: 'Neutral',
             1: 'Angry 화남',
@@ -149,11 +177,18 @@
             5: 'Surprised 놀람'
         };
 
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer); // 기존 타이머를 제거
+            inactivityTimer = setTimeout(() => {
+                window.location.href = 'index.html'; // 30초 후에 index.html로 이동
+            }, 30000); // 30초 = 30000ms
+        }
+
         // 페이지 로드 시 로컬스토리지에서 감정 결과를 가져와서 화면에 표시
         window.onload = function () {
-            const finalResult = JSON.parse(localStorage.getItem('finalEmotionResult'));
-            console.log(finalResult);
+            resetInactivityTimer(); // 페이지 로드 시 타이머 시작
 
+            const finalResult = JSON.parse(localStorage.getItem('finalEmotionResult'));
             if (finalResult) {
                 const finalEmotionIndex = finalResult.emotion;
                 document.getElementById('finalEmotion').innerText = emotionMapping[finalEmotionIndex];
@@ -161,11 +196,13 @@
             } else {
                 document.getElementById('result').innerText = '결과를 찾을 수 없습니다.';
             }
+
+            document.body.addEventListener('click', resetInactivityTimer); // 버튼을 누를 때마다 타이머 리셋
         };
 
         // 서버로 최종 감정 데이터를 전송하는 함수
         function sendFinalEmotionToServer(finalEmotionNum) {
-            fetch(SERVER_URL, { // 상단에서 정의한 서버 URL 사용
+            fetch(SERVER_URL, { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -189,10 +226,10 @@
         // 메시지 박스를 3초 동안 띄우고 사라지게 하는 함수
         function showMessageBox() {
             const messageBox = document.getElementById('messageBox');
-            messageBox.style.display = 'block'; // 메시지 박스 표시
+            messageBox.style.display = 'block'; 
             setTimeout(() => {
-                messageBox.style.display = 'none'; // 3초 후 메시지 박스 숨기기
-            }, 3000); // 3000ms = 3초
+                messageBox.style.display = 'none'; 
+            }, 3000);
         }
 
         // 결과 전송 버튼 클릭 이벤트 핸들러
@@ -200,8 +237,8 @@
             const finalResult = JSON.parse(localStorage.getItem('finalEmotionResult'));
             if (finalResult) {
                 const finalEmotionIndex = finalResult.emotion;
-                sendFinalEmotionToServer(finalEmotionIndex); // 서버로 데이터 전송
-                showMessageBox(); // 메시지 박스 표시
+                sendFinalEmotionToServer(finalEmotionIndex); 
+                showMessageBox();
             } else {
                 console.log('감정 결과를 찾을 수 없습니다.');
             }
