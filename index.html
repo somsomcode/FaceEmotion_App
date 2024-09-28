@@ -51,6 +51,7 @@
         .button-container2 {
             position: fixed;
             width: 100%;
+            display: flex;
             justify-content: center;
             bottom: 20%;
         }
@@ -93,13 +94,6 @@
             opacity: 0.3;
         }
 
-      
-
-            h1 {
-                font-size: 2em;
-            }
-        
-
         /* 반응형 설정 - 큰 화면 */
         @media (min-width: 1200px) {
             .button-container {
@@ -109,6 +103,35 @@
             .button-container button {
                 font-size: 2.5em;
                 padding: 25px 50px;
+            }
+        }
+
+        /* 갤럭시 탭을 포함한 작은 화면에 대한 반응형 설정 */
+        @media (max-width: 1024px) {
+            .button-container, .button-container2 {
+                padding: 0 50px;
+                bottom: 10%; /* 작은 화면에서 버튼이 더 가까워지도록 */
+            }
+
+            button {
+                font-size: 1.5em;
+                padding: 15px 40px;
+            }
+
+            .button-container2 button {
+                font-size: 1em;
+                padding: 10px 20px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5em;
+            }
+
+            button {
+                font-size: 1.2em;
+                padding: 10px 30px;
             }
         }
     </style>

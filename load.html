@@ -40,7 +40,7 @@
   </head>
   <body>
     <!-- 배경 영상 -->
-    <video id="bg-video" autoplay muted loop>
+    <video id="bg-video" autoplay muted loop preload="auto">
       <source src="/video/load.mp4" type="video/mp4" />
       비디오를 지원하지 않는 브라우저입니다.
     </video>
@@ -52,7 +52,7 @@
       // 3초 후에 fin.html로 이동
       setTimeout(function () {
         window.location.href = "fin.html";
-      }, 3000);
+      }, 5000);
 
       // 화면 클릭하면 즉시 fin.html로 이동
       document.body.addEventListener("click", function () {

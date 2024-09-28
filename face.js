@@ -206,6 +206,13 @@ async function analyzeFinalEmotion() {
     console.log("Final Weighted Expressions:", weightedExpressions);
     console.log("Final Detected Emotion:", finalExpression);
 
+    // Neutral일 경우 다시 측정 안내와 페이지 새로고침
+    if (finalExpression === "neutral") {
+        alert("다시 측정해주세요"); // 안내 메시지
+        window.location.reload(); // 페이지 새로고침
+        return; // 아래 코드 실행을 막기 위해 return
+    }
+
     const expressionMapping = {
         neutral: 0,
         angry: 1,
