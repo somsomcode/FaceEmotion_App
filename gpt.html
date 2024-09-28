@@ -119,7 +119,11 @@
     <script src="gpt.js"></script>
     <script>
 
-
+          // 페이지 로드 시 자동으로 사운드 재생
+          window.onload = function() {
+            const musicPlayer = document.getElementById('musicplayer');
+            musicPlayer.play();
+        };
         // 결과 확인 버튼 클릭 시 result.js 실행
         document.getElementById('resultButton').addEventListener('click', function() {
             const script = document.createElement('script');

@@ -64,7 +64,7 @@
             cursor: pointer;
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
             box-shadow: 0px 0px 15px 2px rgb(145, 147, 255);
-            animation: glow 2s infinite ease-in-out; /* 빛나는 애니메이션 추가 */
+            animation: glow 1s infinite ease-in-out; /* 빛나는 애니메이션 추가 */
         }
 
         #sendButton:hover {
@@ -149,8 +149,12 @@
 <body>
     <h1>최종 감정 분석 결과</h1>
     <br>
-    <h3>당신의 표정과 음성 발화 데이터를 수집하여 분석한 결과 입니다. 결과를 전송하고 빛의 동굴을 경험하세요.</h3>
+    <h3>당신의 표정과 일상 데이터를 수집하여 감정 분석한 결과 입니다.  결과를 전송하고 빛의 동굴을 경험하세요. </h3>
 
+    <audio id="musicplayer" autoplay>
+        <source src="fin.mp3" />
+      </audio><!-- 여기에 음성 파일 경로를 넣으세요 -->
+  
     <div id="result">
         <p><strong>최종 감정</strong> <br><span id="finalEmotion"></span></p>
         <p><strong>가중 평균 점수</strong><br> <span id="weightedAverageScore"></span></p>
@@ -175,6 +179,12 @@
             3: 'Happy 행복',
             4: 'Sad 슬픔',
             5: 'Surprised 놀람'
+        };
+
+          // 페이지 로드 시 자동으로 사운드 재생
+          window.onload = function() {
+            const musicPlayer = document.getElementById('musicplayer');
+            musicPlayer.play();
         };
 
         function resetInactivityTimer() {
