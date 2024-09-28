@@ -89,13 +89,10 @@
 </head>
 <body>
     <h1>오늘 당신의 하루를 들려주세요.</h1>
-    <h3> 당신의 일상 데이터를 수집하여 감정을 분석합니다. 오늘 하루 중 가장 기억에 남는 순간이 있었나요? 
+    <h3> 당신의 일상 데이터를 수집하여 감정을 분석합니다. 오늘 당신은 어떤 하루를 보내셨어요? 
         <br> <br> 준비가 되었다면 '녹음 시작' 버튼을 누르고 답변을 남겨주세요. 
     </h3>
 
-    <audio id="musicplayer" autoplay>
-        <source src="gpt.mp3" />
-      </audio><!-- 여기에 음성 파일 경로를 넣으세요 -->
     
      <!-- 상단에 위치한 데이터 영역 -->
      <div class="top-info">
@@ -119,11 +116,6 @@
     <script src="gpt.js"></script>
     <script>
 
-          // 페이지 로드 시 자동으로 사운드 재생
-          window.onload = function() {
-            const musicPlayer = document.getElementById('musicplayer');
-            musicPlayer.play();
-        };
         // 결과 확인 버튼 클릭 시 result.js 실행
         document.getElementById('resultButton').addEventListener('click', function() {
             const script = document.createElement('script');
