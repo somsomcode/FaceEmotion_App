@@ -175,11 +175,11 @@ async function analyzeFinalEmotion() {
     expressionDataArray.forEach((expressions) => {
         weightedExpressions.neutral += expressions.neutral; // neutral은 가중치 없음
         weightedExpressions.happy += expressions.happy; // happy는 가중치 없음
-        weightedExpressions.angry += expressions.angry * 5; // 3배 가중치 적용
-        weightedExpressions.sad += expressions.sad * 5; // 3배 가중치 적용
-        weightedExpressions.disgusted += expressions.disgusted * 5; // 3배 가중치 적용
-        weightedExpressions.surprised += expressions.surprised * 5; // 3배 가중치 적용
-        weightedExpressions.fearful += expressions.fearful * 5; // 3배 가중치 적용
+        weightedExpressions.angry += expressions.angry * 3; // 3배 가중치 적용
+        weightedExpressions.sad += expressions.sad * 3; // 3배 가중치 적용
+        weightedExpressions.disgusted += expressions.disgusted * 3; // 3배 가중치 적용
+        weightedExpressions.surprised += expressions.surprised * 3; // 3배 가중치 적용
+        weightedExpressions.fearful += expressions.fearful * 3; // 3배 가중치 적용
     });
 
     const totalFrames = expressionDataArray.length;
@@ -206,12 +206,12 @@ async function analyzeFinalEmotion() {
     console.log("Final Weighted Expressions:", weightedExpressions);
     console.log("Final Detected Emotion:", finalExpression);
 
-    // // Neutral일 경우 다시 측정 안내와 페이지 새로고침
-    // if (finalExpression === "neutral") {
-    //     alert("감정이 느껴지지 않습니다. 다시 측정해주세요"); // 안내 메시지
-    //     window.location.reload(); // 페이지 새로고침
-    //     return; // 아래 코드 실행을 막기 위해 return
-    // }
+    // Neutral일 경우 다시 측정 안내와 페이지 새로고침
+    if (finalExpression === "neutral") {
+        alert("감정이 느껴지지 않습니다. 다시 측정해주세요"); // 안내 메시지
+        window.location.reload(); // 페이지 새로고침
+        return; // 아래 코드 실행을 막기 위해 return
+    }
 
     const expressionMapping = {
         neutral: 0,

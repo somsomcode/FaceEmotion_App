@@ -99,7 +99,7 @@
         <p><strong>사용자 음성 인식 데이터</strong>  <br> <span id="recognizedText"></span></p>
         <br>
         <p><strong>발화 감정 분석 결과</strong>  <br><span id="gptResponse"></span></p>
-        <p><strong>Time:</strong> <span id="timer">15</span>초</p> <!-- 타이머 추가 -->
+        <p><strong>Time:</strong> <span id="timer">10</span>초</p> <!-- 타이머 추가 -->
     </div>
 
     <!-- 빨간 동그라미 -->
@@ -128,7 +128,7 @@
         document.getElementById('startButton').addEventListener('click', function() {
             const circle = document.getElementById('circle');
             const timerElement = document.getElementById('timer');
-            let timeLeft = 15; // 15초 타이머
+            let timeLeft = 10; // 15초 타이머
 
             // 빨간 동그라미를 화면에 표시
             circle.style.display = 'block';

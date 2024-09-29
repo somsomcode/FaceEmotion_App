@@ -1,6 +1,6 @@
 // 1. 가중치 설정 (상단에서 수정 가능)
-const faceWeight = 4; // 표정 데이터 가중치
-const gptWeight = 6;  // 음성 데이터 가중치
+const faceWeight = 3; // 표정 데이터 가중치
+const gptWeight = 7;  // 음성 데이터 가중치
 
 // 2. 로컬 스토리지에서 데이터를 가져옴
 const gptData = JSON.parse(localStorage.getItem('gptData'));
@@ -11,7 +11,7 @@ const gptScore = parseFloat(gptData.gpt_score);
 const faceScore = parseFloat(faceData.face_score);
 
 // 4. 가중 평균 계산 (설정된 가중치 사용)
-let weightedAverageScore = ((faceScore * faceWeight) + (gptScore * gptWeight)) / (faceWeight + gptWeight);
+const weightedAverageScore = ((faceScore * faceWeight) + (gptScore * gptWeight)) / (faceWeight + gptWeight);
 
 // 5. 최종 감정 결정 로직
 let finalEmotion = '';
@@ -35,7 +35,12 @@ if (gptData.gpt_emotion === faceData.face_emotion) {
     finalEmotion = gptData.gpt_emotion;
 } else {
     // 가중치 점수가 가장 높은 감정을 선택
-    finalEmotion = scores[0].score > 0 ? scores[0].emotion : scores[1].emotion;
+    // 단, 가중 평균 점수가 0일 경우, 두 번째로 높은 감정을 선택
+    if (weightedAverageScore === 0 && scores.length > 1) {
+        finalEmotion = scores[1].emotion; // 두 번째로 높은 점수의 감정을 선택
+    } else {
+        finalEmotion = scores[0].emotion; // 가장 높은 점수의 감정을 선택
+    }
 }
 
 // 7. 최종 결과
@@ -44,22 +49,9 @@ const finalResult = {
     weightedAverageScore: weightedAverageScore.toFixed(2) // 가중 평균 점수 (소수점 2자리)
 };
 
-// 8. 가중 평균 점수가 0인 경우 처리
-if (weightedAverageScore === 0) {
-    // 두 점수 모두 0이면 두 번째로 높은 점수를 사용
-    if (scores[0].score === 0 && scores[1].score > 0) {
-        finalResult.weightedAverageScore = scores[1].score.toFixed(2);
-    }
-}
+// 8. 최종 감정 분석 결과 출력
+console.log(`최종 감정: ${finalEmotion}, 가중 평균 점수: ${finalResult.weightedAverageScore}`);
 
-// 9. 최종 감정이 0인 경우 3으로 처리
-if (finalResult.emotion === 0) {
-    finalResult.emotion = 3; // 0 대신 3을 설정
-}
-
-// 10. 최종 감정 분석 결과 출력
-console.log(`최종 감정: ${finalResult.emotion}, 가중 평균 점수: ${finalResult.weightedAverageScore}`);
-
-// 11. 로컬 스토리지에 최종 감정 분석 결과 저장
+// 9. 로컬 스토리지에 최종 감정 분석 결과 저장
 localStorage.setItem('finalEmotionResult', JSON.stringify(finalResult));
 console.log(finalResult);

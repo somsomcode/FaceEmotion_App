@@ -12,11 +12,11 @@ recognition.lang = "ko-KR"; // 한국어로 설정
 recognition.continuous = true; // 연속 인식 활성화
 recognition.interimResults = false; // 중간 결과는 표시하지 않음
 
-const TIMER_DURATION = 15; // 타이머 시간 저장 (초 단위)
 let countdown = null; // 타이머 카운트다운 저장할 변수
 let finalTranscript = ''; // 음성 인식된 최종 텍스트 저장 변수
 let isRecognizing = false; // 음성 인식이 진행 중인지 여부
-let timeLeft = TIMER_DURATION; // 타이머 시간 저장
+let timeLeft = 10; // 타이머 시간 저장
+let isPaused = false; // 일시정지 상태 저장
 
 // 타이머 초기화 및 시작 함수
 function startTimer() {
@@ -27,7 +27,7 @@ function startTimer() {
     timerElement.innerText = timeLeft; // 초기 타이머 값 설정
 
     countdown = setInterval(() => {
-        if (isRecognizing) { // 음성 인식이 진행 중일 때만 타이머가 감소함
+        if (!isPaused) { // 타이머가 일시정지 상태가 아니면
             timeLeft--;
             timerElement.innerText = timeLeft;
 
@@ -44,26 +44,28 @@ function startTimer() {
 function stopTimer() {
     clearInterval(countdown); // 타이머 종료
     countdown = null; // 타이머 변수를 초기화
-    timeLeft = TIMER_DURATION; // 타이머 리셋
-    timerElement.innerText = timeLeft; // UI에서 타이머 리셋
 }
 
 // 음성 인식이 시작되면 호출되는 함수
 startButton.addEventListener('click', () => {
-    if (!isRecognizing) {
+    if (isRecognizing) {
+        // 음성 인식 중이면 일시정지
+        recognition.stop(); // 음성 인식 중지
+        startButton.innerText = "녹음 시작";
+        isRecognizing = false;
+        isPaused = true; // 일시정지 상태로 변경
+    } else {
         // 음성 인식이 중지된 상태면 시작
-        if (timeLeft === TIMER_DURATION || countdown === null) {
+        if (timeLeft === 15) {
             finalTranscript = ''; // 이전 인식 결과 초기화
-            timeLeft = TIMER_DURATION; // 타이머 리셋
-            startTimer(); // 타이머 시작
         }
 
         recognition.start(); // 음성 인식 시작
+        startButton.innerText = "녹음 일시정지";
         isRecognizing = true;
+        isPaused = false; // 일시정지 해제
 
-        // 버튼 비활성화 및 텍스트 변경
-        startButton.disabled = true;
-        startButton.innerText = "녹음 중..."; // 중지라는 단어 대신 녹음 중...으로 표시
+        startTimer(); // 타이머 시작 (타이머가 이미 실행 중이면 시작하지 않음)
     }
 });
 
@@ -81,15 +83,16 @@ recognition.onresult = (event) => {
 
 // 음성 인식이 종료되면 GPT에 텍스트 자동 전송
 recognition.onend = () => {
+    startButton.innerText = "녹음 시작"; // 버튼 상태 복구
     isRecognizing = false;
+    isPaused = true; // 음성 인식 종료 시 일시정지 상태로 전환
     stopTimer(); // 타이머 종료
 
-    // 버튼을 다시 활성화하고 텍스트를 복구
-    startButton.disabled = false;
-    startButton.innerText = "녹음 시작";
-
-    if (finalTranscript.trim()) {
-        sendTextToGPT(finalTranscript); // 음성 인식된 텍스트를 GPT에 전송
+    if (timeLeft <= 0) {
+        timeLeft = 10; // 타이머 리셋
+        if (finalTranscript.trim()) {
+            sendTextToGPT(finalTranscript); // 음성 인식된 텍스트를 GPT에 전송
+        }
     }
 };
 
