@@ -81,21 +81,6 @@
             transform: translateY(-3px);
         }
 
-        /* 토글 버튼 */
-        #toggleButton {
-            position: fixed;
-            top: 5px;
-            right: 5px;
-            font-size: 8px;
-            padding: 5px 10px;
-            background-color: #333;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            opacity: 0.3;
-        }
-
         /* 반응형 설정 - 큰 화면 */
         @media (min-width: 1200px) {
             .button-container {
@@ -152,15 +137,6 @@
         <button onclick="location.href='cam-load.html'">감정 분석 시작하기</button>
     </div>
 
-    <button id="toggleButton" onclick="toggleButtons()">osc</button>
-
-    <div class="button-container2" id="buttonContainer" style="display: none;">
-        <button onclick="sendNumberToServer(1)">1</button>
-        <button onclick="sendNumberToServer(2)">2</button>
-        <button onclick="sendNumberToServer(3)">3</button>
-        <button onclick="sendNumberToServer(4)">4</button>
-        <button onclick="sendNumberToServer(5)">5</button>
-    </div>
 
     <script>
         const SERVER_URL = "https://main-activity.com/gpt";
