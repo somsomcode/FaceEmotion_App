@@ -39,57 +39,10 @@
             font-size: 3em;
         }
 
-        /* 버튼 컨테이너 중앙 배치 */
-        .button-container {
-            width: 100%;
-            display: flex;
-            justify-content: center; /* 버튼을 가운대로 배치 */
-            padding: 0 100px;
-            margin-bottom: 150px;
-            position: absolute;
-            bottom: 20%;
-        }
-
-        .button-container2 {
-            position: fixed;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            bottom: 20%;
-        }
-
-        .button-container2 button {
-            margin: 0 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-        }
-
-        button {
-            color: white;
-            padding: 20px 50px;
-            font-size: 2em;
-            background: linear-gradient(to bottom, #1f0d68, #461cbb);
-            border: none;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background: linear-gradient(to right, #2575fc, #6a11cb);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-            transform: translateY(-3px);
-        }
-
         /* 반응형 설정 - 큰 화면 */
         @media (min-width: 1200px) {
-            .button-container {
-                padding: 0 150px;
-            }
-
-            .button-container button {
+            h1 {
                 font-size: 2.5em;
-                padding: 25px 50px;
             }
         }
 
@@ -98,31 +51,11 @@
             #bg-video {
                 object-fit: contain; /* 작은 화면에서는 비율에 맞춰 영상을 표시 */
             }
-
-            .button-container, .button-container2 {
-                padding: 0 50px;
-                bottom: 10%; /* 작은 화면에서 버튼이 더 가까워지도록 */
-            }
-
-            button {
-                font-size: 1.5em;
-                padding: 15px 40px;
-            }
-
-            .button-container2 button {
-                font-size: 1em;
-                padding: 10px 20px;
-            }
         }
 
         @media (max-width: 600px) {
             h1 {
                 font-size: 1.5em;
-            }
-
-            button {
-                font-size: 1.2em;
-                padding: 10px 30px;
             }
         }
     </style>
@@ -132,50 +65,17 @@
         <source src="/video/base.mp4" type="video/mp4" />
     </video>
 
-    <div class="button-container">
-        <!-- 감정 분석 버튼을 화면의 중앙에 배치 -->
-        <button onclick="location.href='cam-load.html'">감정 분석 시작하기</button>
-    </div>
-
-
     <script>
-        const SERVER_URL = "https://main-activity.com/gpt";
-
-        function toggleButtons() {
-            const buttonContainer = document.getElementById('buttonContainer');
-            const toggleButton = document.getElementById('toggleButton');
-            const currentDisplay = window.getComputedStyle(buttonContainer).display;
-            
-            if (currentDisplay === 'none') {
-                buttonContainer.style.display = 'block';
-                toggleButton.textContent = 'osc';
-            } else {
-                buttonContainer.style.display = 'none';
-                toggleButton.textContent = 'osc';
-            }
+        // 화면 터치 시 cam-load.html로 이동하는 함수
+        function handleTouch() {
+            location.href = 'cam-load.html';
         }
 
-        function sendNumberToServer(number) {
-            fetch(SERVER_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ text: number })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('서버 응답:', data);
-            })
-            .catch(error => {
-                console.error('서버로 전송 중 오류 발생:', error);
-            });
-        }
+        // 터치 이벤트 리스너 추가
+        document.addEventListener('touchstart', handleTouch);
+
+        // 마우스 클릭도 지원하도록 클릭 이벤트 리스너 추가
+        document.addEventListener('click', handleTouch);
     </script>
 </body>
 </html>
