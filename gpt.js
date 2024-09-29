@@ -12,7 +12,7 @@ recognition.lang = "ko-KR"; // 한국어로 설정
 recognition.continuous = true; // 연속 인식 활성화
 recognition.interimResults = false; // 중간 결과는 표시하지 않음
 
-const TIMER_DURATION = 10; // 타이머 시간 저장 (초 단위)
+const TIMER_DURATION = 15; // 타이머 시간 저장 (초 단위)
 let countdown = null; // 타이머 카운트다운 저장할 변수
 let finalTranscript = ''; // 음성 인식된 최종 텍스트 저장 변수
 let isRecognizing = false; // 음성 인식이 진행 중인지 여부
