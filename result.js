@@ -52,9 +52,14 @@ if (weightedAverageScore === 0) {
     }
 }
 
-// 9. 최종 감정 분석 결과 출력
+// 9. 최종 감정이 0인 경우 3으로 처리
+if (finalResult.emotion === 0) {
+    finalResult.emotion = 3; // 0 대신 3을 설정
+}
+
+// 10. 최종 감정 분석 결과 출력
 console.log(`최종 감정: ${finalResult.emotion}, 가중 평균 점수: ${finalResult.weightedAverageScore}`);
 
-// 10. 로컬 스토리지에 최종 감정 분석 결과 저장
+// 11. 로컬 스토리지에 최종 감정 분석 결과 저장
 localStorage.setItem('finalEmotionResult', JSON.stringify(finalResult));
 console.log(finalResult);
