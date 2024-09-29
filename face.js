@@ -175,11 +175,11 @@ async function analyzeFinalEmotion() {
     expressionDataArray.forEach((expressions) => {
         weightedExpressions.neutral += expressions.neutral; // neutral은 가중치 없음
         weightedExpressions.happy += expressions.happy; // happy는 가중치 없음
-        weightedExpressions.angry += expressions.angry * 3; // 3배 가중치 적용
-        weightedExpressions.sad += expressions.sad * 3; // 3배 가중치 적용
-        weightedExpressions.disgusted += expressions.disgusted * 3; // 3배 가중치 적용
-        weightedExpressions.surprised += expressions.surprised * 3; // 3배 가중치 적용
-        weightedExpressions.fearful += expressions.fearful * 3; // 3배 가중치 적용
+        weightedExpressions.angry += expressions.angry * 5; // 3배 가중치 적용
+        weightedExpressions.sad += expressions.sad * 5; // 3배 가중치 적용
+        weightedExpressions.disgusted += expressions.disgusted * 5; // 3배 가중치 적용
+        weightedExpressions.surprised += expressions.surprised * 5; // 3배 가중치 적용
+        weightedExpressions.fearful += expressions.fearful * 5; // 3배 가중치 적용
     });
 
     const totalFrames = expressionDataArray.length;
