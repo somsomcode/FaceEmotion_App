@@ -1,74 +1,147 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>감정 분석 결과</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>최종 감정 분석 결과</title>
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        padding: 20px;
-      }
-      #start-button {
-        margin-top: 20px;
-        padding: 10px 20px;
-        font-size: 16px;
-        background-color: black;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-      #start-button:hover {
-        background-color: gray;
-      }
+        body {
+          font-family: Arial, sans-serif;
+          text-align: center;
+          padding: 20px;
+          color: white; /* 모든 텍스트를 흰색으로 설정 */
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        }
 
-      /* expression 요소의 글씨 크기 조정 */
-      #expression {
-        font-size: 24px; /* 글씨 크기 설정 (24px는 예시로, 필요에 따라 조절) */
-        font-weight: bold; /* 글씨를 굵게 */
+        /* 배경 비디오 설정 */
+        #backgroundVideo {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          z-index: -1; /* 비디오가 모든 요소 뒤에 배치 */
+        }
+
+
+        #result {
+            font-size: 1.5rem;
+            margin-top: 20px;
+        }
+
+        #buttonContainer {
+          display: flex;
+          flex-direction: column; /* 버튼들을 위아래로 배치 */
+          align-items: center;
+          gap: 10px; /* 버튼 사이의 간격 */
+          margin-top: 30px;
+        }
+
+        #sendButton, #backButton {
+          padding: 10px 20px;
+          font-size: 16px;
+          background-color: black;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          width: 200px; /* 버튼의 고정 너비 */
       }
+        
+        #sendButton:hover, #backButton:hover {
+          background-color: gray;
+        }
+        
     </style>
-  </head>
-  <body>
-    <h1>감정 분석 결과</h1>
+</head>
+<body>
+  <!-- 배경 비디오 -->
+  <video id="backgroundVideo" autoplay muted loop>
+    <source src="/video/fin.mp4" type="video/mp4">
+    <!-- 여기에 배경 비디오 파일 경로를 입력하세요 -->
+  </video>
+    <h1>최종 감정 분석 결과</h1>
+    <p>사용자의 감정 분석 결과를 아래에서 확인할 수 있습니다. <br> 분석 결과는 서버에서 처리된 데이터를 기반으로 합니다.</p>
 
-    <!-- 설명 문장 추가 -->
-    <button id="start-button">처음 화면으로</button>
+    <div id="result">
+        <p><strong>최종 감정</strong> <br><span id="finalEmotion"></span></p>
+        <p><strong>가중 평균 점수</strong><br> <span id="weightedAverageScore"></span></p>
+    </div>
 
-    <p id="expression"></p>
-    <p>
-      이 페이지에서는 얼굴 인식 기술을 사용하여 당신의 감정을 분석한 결과를
-      보여줍니다.<br />
-      아래의 결과는 N초 동안 당신의 표정에서 분석된 감정의 가장 높은 값을
-      기준으로 합니다.<br />
-      당신을 위한 Light 테라피가 준비되어 있습니다.<br />
-      편안하게 작품을 감상하세요.
-    </p>
+      <!-- 서버에 감정 결과를 보내는 버튼 -->
+      <div id="buttonContainer">
+    <button id="sendButton">결과 서버로 전송</button>
+    <button id="backButton">처음으로</button></div>
 
     <script>
-      // 로컬 스토리지에서 값 읽어오기
-      const highestAverageExpression = JSON.parse(
-        localStorage.getItem("highestAverageExpression")
-      );
+        // 감정 상태와 숫자 매핑
+        const emotionMapping = {
+            0: 'Neutral',
+            1: 'Angry 화남',
+            2: 'Fearful 두려움',
+            3: 'Happy 행복',
+            4: 'Sad 슬픔',
+            5: 'Surprised 놀람'
+        };
 
-      // 결과 표시
-      const expressionElement = document.getElementById("expression");
-      if (highestAverageExpression) {
-        expressionElement.textContent = `당신의 표정에서 가장 높게 분석되는 감정은 : ${
-          highestAverageExpression.name
-        } (${(highestAverageExpression.value * 100).toFixed(2)}%) 입니다.`;
-      } else {
-        expressionElement.textContent = "감정 분석 결과를 불러올 수 없습니다.";
-      }
+        window.onload = function () {
+            const finalResult = JSON.parse(localStorage.getItem('finalEmotionResult'));
+            console.log(finalResult);
 
-      // 버튼 클릭 시 start.html로 이동
-      document
-        .getElementById("start-button")
-        .addEventListener("click", function () {
-          window.location.href = "start.html";
+            if (finalResult) {
+                const finalEmotionIndex = finalResult.emotion; // 숫자 감정 인덱스
+                // 숫자에 따른 감정 상태 표시
+                document.getElementById('finalEmotion').innerText = emotionMapping[finalEmotionIndex];
+                document.getElementById('weightedAverageScore').innerText = finalResult.weightedAverageScore + '%';
+            } else {
+                document.getElementById('result').innerText = '결과를 찾을 수 없습니다.';
+            }
+        };
+
+        function sendFinalEmotionToServer(finalEmotionNum) {
+            //http://34.47.112.24:3000
+            //http://localhost:3000
+            fetch('http://34.47.112.24:3000/gpt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: finalEmotionNum }), // 숫자 인덱스를 서버로 전송
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('서버에 전송 성공:', data);
+                console.log("Fin.js 결과값")
+            })
+            .catch(error => {
+                console.error('서버 전송 오류:', error);
+            });
+        }
+        
+         // 버튼 클릭 이벤트 리스너 등록
+         document.getElementById('sendButton').addEventListener('click', function() {
+          const finalResult = JSON.parse(localStorage.getItem('finalEmotionResult'));
+          if (finalResult) {
+              const finalEmotionIndex = finalResult.emotion;
+              sendFinalEmotionToServer(finalEmotionIndex); // 버튼 클릭 시 서버로 데이터 전송
+          } else {
+              console.log('감정 결과를 찾을 수 없습니다.');
+          }
+      });
+
+        document.getElementById('backButton').addEventListener('click', function() {
+            window.location.href = 'index.html';
         });
     </script>
-  </body>
+
+</body>
 </html>
