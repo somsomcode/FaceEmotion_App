@@ -1,0 +1,39 @@
+{
+    "name": "Luminous Melody",
+    "short_name": "Luminous",
+    "description": "Luminous Melody - Interactive art experience",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#1f0d68",
+    "orientation": "landscape",
+    "icons": [
+        {
+            "src": "app-icon.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "app-icon.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Explore Luminous Melody",
+            "short_name": "Explore",
+            "description": "Dive into Luminous Melody",
+            "url": "/explore",
+            "icons": [
+                {
+                    "src": "app-icon.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                }
+            ]
+        }
+    ],
+    "scope": "/",
+    "lang": "en"
+}
